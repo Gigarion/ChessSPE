@@ -1,43 +1,53 @@
-import java.awt.Color;
-
 public class Tile
 {
+    //instance variables for identiying the tiles,
+    //establishes empty tile, and size of tile
     private String iD;
-    private double x;
-    private double y;
-    private double r;
-    
-    
-    public Tile()
+    private Piece piece = null;
+    private static double r = 0.25;
+   
+    //constructor of tile
+    public Tile(String id)
     {
-        this.x = x;
-        this.y = y;
-        this.r = r;
+        this.iD = id;
     }
     
-    public void drawFilled()
+    //return the id of the tile
+    public String getID()
     {
-        double[] xFill = { };
-        double[] yFill = { };
+        return this.iD;
+    }
+
+    //draw the tile based on its id
+    public void draw(double x0, double y0)
+    {
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.square(x0, y0, r);
         
-        StdDraw.setPenColor();
-        StdDraw.filledSquare();    
+        int i = Character.getNumericValue(iD.charAt(0));
+        int j = Character.getNumericValue(iD.charAt(1));
+        
+        if((i+j) % 2 == 0)
+        {
+            StdDraw.setPenColor(StdDraw.BLACK);
+            StdDraw.filledSquare(x0, y0, r);
+        }
+        else
+        {
+            StdDraw.setPenColor(StdDraw.WHITE);
+            StdDraw.filledSquare(x0, y0, r);
+        }
     }
     
-    
-    public void contains()
+    //place a piece on the tile
+    public void place(Piece p)
     {
-        
-        
+        piece = p;
     }
     
-    public static void main(String[], args)
+    //identifies the piece on the tile
+    public Piece getPiece(int x, int y)
     {
-        StdDraw.swr
-        
-        
-        
-        
+        return piece;
     }
-    
 }
