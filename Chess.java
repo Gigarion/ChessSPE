@@ -2,7 +2,9 @@ import java.util.Stack;
 public class Chess {
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.getBoard().setGame(game);
+		Board toWork = game.getBoard();
+		toWork.setGame(game);
+		toWork.reset();
 		Stack<Piece> white = game.getBoard().getWhitePieces();
 		Stack<Piece> black = game.getBoard().getBlackPieces();
 		Tile[][] tiles = game.getBoard().getTiles();
@@ -19,7 +21,10 @@ public class Chess {
 		}
 		game.setWhitePieces(white);
 		game.setBlackPieces(black);
-		game.getBoard().reset();
-		game.getBoard().draw();
+		toWork.draw();
+		Tile toMoveTo = game.getTile(3, 0);
+		Piece pawn = game.getTile(1, 0).getPiece();
+		toWork.move(pawn, toMoveTo);
+		toWork.draw();
 	}
 }

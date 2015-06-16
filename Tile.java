@@ -26,7 +26,7 @@ public class Tile
     //draw the tile based on its id
     public void draw(double x0, double y0)
     {
-        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setPenColor(StdDraw.BLUE);
         StdDraw.square(x0, y0, r);
         
         //int i is the first integer of iD and int j is
@@ -38,7 +38,7 @@ public class Tile
         //i and j is even (black) or odd (white)
         if((i+j) % 2 == 0)
         {
-            StdDraw.setPenColor(StdDraw.BLACK);
+            StdDraw.setPenColor(StdDraw.BLUE);
             StdDraw.filledSquare(x0, y0, r);
         }
         else
@@ -46,10 +46,10 @@ public class Tile
             StdDraw.setPenColor(StdDraw.WHITE);
             StdDraw.filledSquare(x0, y0, r);
         }
-        System.out.println(iD);
-        StdDraw.show(5);
-        drawPiece(piece, x0, y0);
-        System.out.println(this.piece.getColor());
+        if (piece != null)
+            drawPiece(piece, x0, y0);
+
+        StdDraw.show(25);
     }
 
     //draws the different chess pieces at a tile
@@ -63,27 +63,27 @@ public class Tile
         //rooks, pawns, and knights
         else if (piece.getType() == 'B')
         {
-            StdDraw.picture(x0, y0, "wB.png");
+            StdDraw.picture(x0, y0, "images\\wB.png");
         }
         else if (piece.getType() == 'K')
         {
-            StdDraw.picture(x0, y0, "wK.png");
+            StdDraw.picture(x0, y0, "images\\wK.png");
         }
         else if (piece.getType() == 'N')
         {
-            StdDraw.picture(x0, y0, "wN.png");
+            StdDraw.picture(x0, y0, "images\\wN.png");
         }
         else if (piece.getType() == 'P')
         {
-            StdDraw.picture(x0, y0, "wP.png");
+            StdDraw.picture(x0, y0, "images\\wP.png");
         }
         else if (piece.getType() == 'Q')
         {
-            StdDraw.picture(x0, y0, "wQ.png");
+            StdDraw.picture(x0, y0, "images\\wQ.png");
         }
         else if (piece.getType() == 'R')
         {
-            StdDraw.picture(x0, y0, "wR.png");
+            StdDraw.picture(x0, y0, "images\\wR.png");
         }
         
         //if there are piece.getType()s with lowercase letters, it
@@ -91,27 +91,27 @@ public class Tile
         //rooks, pawns, and knights
         else if (piece.getType() == 'b')
         {
-            StdDraw.picture(x0, y0, "bB.png");
+            StdDraw.picture(x0, y0, "images\\bB.png");
         }
         else if (piece.getType() == 'k')
         {
-            StdDraw.picture(x0, y0, "bK.png");
+            StdDraw.picture(x0, y0, "images\\bK.png");
         }
         else if (piece.getType() == 'n')
         {
-            StdDraw.picture(x0, y0, "bN.png");
+            StdDraw.picture(x0, y0, "images\\bN.png");
         }
         else if (piece.getType() == 'p')
         {
-            StdDraw.picture(x0, y0, "bP.png");
+            StdDraw.picture(x0, y0, "images\\bP.png");
         }
         else if (piece.getType() == 'q')
         {
-            StdDraw.picture(x0, y0, "bQ.png");
+            StdDraw.picture(x0, y0, "images\\bQ.png");
         }
         else if (piece.getType() == 'r')
         {
-            StdDraw.picture(x0, y0, "bR.png");
+            StdDraw.picture(x0, y0, "images\\bR.png");
         }
     }
     

@@ -3,7 +3,6 @@ public class Board {
 	private Tile[][] tiles = new Tile[8][8];
 	private Stack<Piece> wPieces;
 	private Stack<Piece> bPieces;
-	private boolean flip;
 	private Game game;
 	private static final double tileStartX = 0;
 	private static final double tileStartY = 0;
@@ -11,8 +10,7 @@ public class Board {
 	private static final double fTileStartY = 7;
 	private static final double displacement = 1;
 	
-	public Board() { // constructor
-		this.flip = false;
+	public Board() { // constructor;
 		wPieces = new Stack<Piece>();
 		bPieces = new Stack<Piece>();
 		for (int r = 0; r < 8; r++) { // creates 8 x 8 grid of tiles
@@ -32,7 +30,7 @@ public class Board {
 	public void draw() { // draws current state of the board
 		StdDraw.setXscale(-1, 8);
 		StdDraw.setYscale(-1, 8);
-		if (!flip) {
+		if (!game.getFlip()) {
 			for (int r = 0; r < 8; r++) {
 				for (int c = 0; c < 8; c++) {
 					tiles[r][c].draw((tileStartX + (c * displacement)), (tileStartY + (r * displacement)));
@@ -42,14 +40,14 @@ public class Board {
 		else {
 			for (int r = 0; r < 8; r++) {
 				for (int c = 0; c < 8; c++) {
-					tiles[r][c].draw((tileStartX - (c * displacement)), (tileStartY - (r * displacement)));
+					tiles[r][c].draw((fTileStartX - (c * displacement)), (fTileStartY - (r * displacement)));
 				}
 			}
 		} 
 	}
 
 	public boolean isFlipped() { // returns whether or not the board is flipped (black at bottom)
-		return flip;
+		return game.getFlip();
 	}
 
 	public void reset() { // creates a blank gameboard
@@ -144,6 +142,7 @@ public class Board {
 	}
 
 	public Stack<Piece> getWhitePieces() {
+		System.out.println("working");
 		return wPieces;
 	}
 
@@ -159,6 +158,7 @@ public class Board {
 			toMove.getTile().empty();
 			target.place(toMove);
 			toMove.moveTo(target);
+			game.flip();
 		}
 	}
 

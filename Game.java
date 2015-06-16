@@ -5,6 +5,8 @@ public class Game {
 	// side to move
 	private char side;
 
+	private boolean isFlipped;
+
 	// list of moves made in the game
 	private Stack<String> movehistory;
 
@@ -44,6 +46,7 @@ public class Game {
 
 	public Game(char side, Stack<String> movehistory, int half, int threerep, Tile ep, boolean[] castlingrights) {
 		this.side           = side;
+		this.isFlipped      = false;
 		this.movehistory    = movehistory;
 		this.halfMoves      = half;
 		this.ep             = ep;
@@ -125,6 +128,14 @@ public class Game {
 
 	public Piece getBlackKing() {
 		return bKing;
+	}
+
+	public void flip() {
+		isFlipped = !isFlipped;
+	}
+
+	public boolean getFlip() {
+		return isFlipped;
 	}
 
 	// unit test of methods

@@ -54,6 +54,7 @@ public class Piece {
 	}
 
 	public void setGame(Game g) {
+		System.out.println(g.getSide());
 		this.game = g;
 	}
 	// returns stack of possible moves
@@ -68,6 +69,7 @@ public class Piece {
 		if (piecetype == 'P') {
 
 			// diagonal left
+			System.out.println(game.getSide());
 			Tile left = game.getTile(rank+1, file-1);
 
 			// diagonal right
@@ -76,16 +78,24 @@ public class Piece {
 			// middle
 			Tile middle = game.getTile(rank+1, file);
 
-			if (left != null && left.getPiece().getColor() == 'b') {
-				stack.push(left);
+			if (left != null && left.getPiece() != null) {
+				if (left.getPiece().getColor() == 'b') {
+					stack.push(left);
+				}
 			}
 
-			if (right != null && right.getPiece().getColor() == 'b') {
-				stack.push(right);
+			if (right != null && right.getPiece() != null) {
+				if (right.getPiece().getColor() == 'b')
+					stack.push(right);
 			}
 
 			if (middle != null && middle.getPiece() == null) {
 				stack.push(middle);
+			}
+			
+			Tile lunge = game.getTile(rank + 2, file);
+			if (lunge != null && middle != null && middle.getPiece() == null && lunge.getPiece() == null && rank == 1) {
+				stack.push(lunge);
 			}
 
 			// adds the ep square if one exists
@@ -112,16 +122,23 @@ public class Piece {
 			// middle
 			Tile middle = game.getTile(rank-1, file);
 
-			if (left != null && left.getPiece().getColor() == 'w') {
-				stack.push(left);
+			if (left != null && left.getPiece() != null) {
+				if (left.getPiece().getColor() == 'w')
+					stack.push(left);
 			}
 
-			if (right != null && right.getPiece().getColor() == 'w') {
-				stack.push(right);
+			if (right != null && right.getPiece() != null) {
+				if (right.getPiece().getColor() == 'w')
+					stack.push(right);
 			}
 
 			if (middle != null && middle.getPiece() == null) {
 				stack.push(middle);
+			}
+
+			Tile lunge = game.getTile(rank - 2, file);
+			if (lunge != null && middle != null && middle.getPiece() == null && lunge.getPiece() == null && rank == 6) {
+				stack.push(lunge);
 			}
 
 			// adds the ep square if one exists
