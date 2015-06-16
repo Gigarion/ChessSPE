@@ -1,7 +1,12 @@
+import java.util.Stack;
+
 public class Piece {
 
 	// type of piece
 	private char type;
+
+	// which game the pieces are from
+	private Game game;
 
 	// color of piece
 	private char color;
@@ -36,15 +41,26 @@ public class Piece {
 		return tile;
 	}
 
+	public void setType(char t) {
+		type = t;
+	}
+
+	public void setColor(char c) {
+		color = c;
+	}
+
 	public void moveTo(Tile tile) {
 		this.tile = tile;
 	}
 
+	public void setGame(Game g) {
+		this.game = g;
+	}
 	// returns stack of possible moves
 	public Stack<Tile> moves() {
 
-		Stack<Tile> stack = new Stack();
-		char piecetype    = piece.type;
+		Stack<Tile> stack = new Stack<Tile>();
+		char piecetype    = type;
 		int rank          = Character.getNumericValue(tile.getID().charAt(0));
 		int file          = Character.getNumericValue(tile.getID().charAt(1));
 
@@ -52,13 +68,13 @@ public class Piece {
 		if (piecetype == 'P') {
 
 			// diagonal left
-			Tile left = Board.getTile(rank+1, file-1);
+			Tile left = game.getTile(rank+1, file-1);
 
 			// diagonal right
-			Tile right = Board.getTile(rank+1, file+1);
+			Tile right = game.getTile(rank+1, file+1);
 
 			// middle
-			Tile middle = Board.getTile(rank+1, file);
+			Tile middle = game.getTile(rank+1, file);
 
 			if (left != null && left.getPiece().getColor() == 'b') {
 				stack.push(left);
@@ -73,8 +89,8 @@ public class Piece {
 			}
 
 			// adds the ep square if one exists
-			if (Game.getEP() != null) {
-				Tile eptile = Board.getEP();
+			if (game.getEP() != null) {
+				Tile eptile = game.getEP();
 				int eprank  = Character.getNumericValue(eptile.getID().charAt(0));
 				int epfile  = Character.getNumericValue(eptile.getID().charAt(1));
 				if ((Math.abs(epfile-file) == 1) && (eprank-rank == 1)) {
@@ -88,13 +104,13 @@ public class Piece {
 		else if (piecetype == 'p') {
 			
 			// diagonal left
-			Tile left = Board.getTile(rank-1, file-1);
+			Tile left = game.getTile(rank-1, file-1);
 
 			// diagonal right
-			Tile right = Board.getTile(rank-1, file+1);
+			Tile right = game.getTile(rank-1, file+1);
 
 			// middle
-			Tile middle = Board.getTile(rank-1, file);
+			Tile middle = game.getTile(rank-1, file);
 
 			if (left != null && left.getPiece().getColor() == 'w') {
 				stack.push(left);
@@ -109,8 +125,8 @@ public class Piece {
 			}
 
 			// adds the ep square if one exists
-			if (Game.getEP() != null) {
-				Tile eptile = Board.getEP();
+			if (game.getEP() != null) {
+				Tile eptile = game.getEP();
 				int eprank  = Character.getNumericValue(eptile.getID().charAt(0));
 				int epfile  = Character.getNumericValue(eptile.getID().charAt(1));
 				if ((Math.abs(epfile-file) == 1) && (rank-eprank == 1)) {
@@ -124,44 +140,44 @@ public class Piece {
 		else if (piecetype == 'N') {
 
 			// moving clockwise from the bottom-left square...
-			Tile bottomleft  = Board.getTile(rank-2, file-1);
-			Tile leftbottom  = Board.getTile(rank-1, file-2);
-			Tile lefttop     = Board.getTile(rank+1, file-2);
-			Tile topleft     = Board.getTile(rank+2, file-1);
-			Tile topright    = Board.getTile(rank+2, file+1);
-			Tile righttop    = Board.getTile(rank+1, file+2);
-			Tile rightbottom = Board.getTile(rank-1, file+2);
-			Tile bottomright = Board.getTile(rank-2, file+1);
+			Tile bottomleft  = game.getTile(rank-2, file-1);
+			Tile leftbottom  = game.getTile(rank-1, file-2);
+			Tile lefttop     = game.getTile(rank+1, file-2);
+			Tile topleft     = game.getTile(rank+2, file-1);
+			Tile topright    = game.getTile(rank+2, file+1);
+			Tile righttop    = game.getTile(rank+1, file+2);
+			Tile rightbottom = game.getTile(rank-1, file+2);
+			Tile bottomright = game.getTile(rank-2, file+1);
 
-			if ((bottomleft != null) && ((bottomleft.getPiece() == null) || (bottomleft.getPiece().getColor() == 'b')) {
+			if ((bottomleft != null) && ((bottomleft.getPiece() == null) || (bottomleft.getPiece().getColor() == 'b'))) {
 				stack.push(bottomleft);
 			}
 
-			if ((leftbottom != null) && ((leftbottom.getPiece() == null) || (leftbottom.getPiece().getColor() == 'b')) {
+			if ((leftbottom != null) && ((leftbottom.getPiece() == null) || (leftbottom.getPiece().getColor() == 'b'))) {
 				stack.push(leftbottom);
 			}
 
-			if ((lefttop != null) && ((lefttop.getPiece() == null) || (lefttop.getPiece().getColor() == 'b')) {
+			if ((lefttop != null) && ((lefttop.getPiece() == null) || (lefttop.getPiece().getColor() == 'b'))) {
 				stack.push(lefttop);
 			}
 
-			if ((topleft != null) && ((topleft.getPiece() == null) || (topleft.getPiece().getColor() == 'b')) {
+			if ((topleft != null) && ((topleft.getPiece() == null) || (topleft.getPiece().getColor() == 'b'))) {
 				stack.push(topleft);
 			}
 
-			if ((topright != null) && ((topright.getPiece() == null) || (topright.getPiece().getColor() == 'b')) {
+			if ((topright != null) && ((topright.getPiece() == null) || (topright.getPiece().getColor() == 'b'))) {
 				stack.push(topright);
 			}
 
-			if ((righttop != null) && ((righttop.getPiece() == null) || (righttop.getPiece().getColor() == 'b')) {
+			if ((righttop != null) && ((righttop.getPiece() == null) || (righttop.getPiece().getColor() == 'b'))) {
 				stack.push(righttop);
 			}
 
-			if ((rightbottom != null) && ((rightbottom.getPiece() == null) || (rightbottom.getPiece().getColor() == 'b')) {
+			if ((rightbottom != null) && ((rightbottom.getPiece() == null) || (rightbottom.getPiece().getColor() == 'b'))) {
 				stack.push(rightbottom);
 			}
 
-			if ((bottomright != null) && ((bottomright.getPiece() == null) || (bottomright.getPiece().getColor() == 'b')) {
+			if ((bottomright != null) && ((bottomright.getPiece() == null) || (bottomright.getPiece().getColor() == 'b'))) {
 				stack.push(bottomright);
 			}
 		}
@@ -170,44 +186,44 @@ public class Piece {
 		else if (piecetype == 'n') {
 
 			// moving clockwise from the bottom-left square...
-			Tile bottomleft  = Board.getTile(rank-2, file-1);
-			Tile leftbottom  = Board.getTile(rank-1, file-2);
-			Tile lefttop     = Board.getTile(rank+1, file-2);
-			Tile topleft     = Board.getTile(rank+2, file-1);
-			Tile topright    = Board.getTile(rank+2, file+1);
-			Tile righttop    = Board.getTile(rank+1, file+2);
-			Tile rightbottom = Board.getTile(rank-1, file+2);
-			Tile bottomright = Board.getTile(rank-2, file+1);
+			Tile bottomleft  = game.getTile(rank-2, file-1);
+			Tile leftbottom  = game.getTile(rank-1, file-2);
+			Tile lefttop     = game.getTile(rank+1, file-2);
+			Tile topleft     = game.getTile(rank+2, file-1);
+			Tile topright    = game.getTile(rank+2, file+1);
+			Tile righttop    = game.getTile(rank+1, file+2);
+			Tile rightbottom = game.getTile(rank-1, file+2);
+			Tile bottomright = game.getTile(rank-2, file+1);
 
-			if ((bottomleft != null) && ((bottomleft.getPiece() == null) || (bottomleft.getPiece().getColor() == 'w')) {
+			if ((bottomleft != null) && ((bottomleft.getPiece() == null) || (bottomleft.getPiece().getColor() == 'w'))) {
 				stack.push(bottomleft);
 			}
 
-			if ((leftbottom != null) && ((leftbottom.getPiece() == null) || (leftbottom.getPiece().getColor() == 'w')) {
+			if ((leftbottom != null) && ((leftbottom.getPiece() == null) || (leftbottom.getPiece().getColor() == 'w'))) {
 				stack.push(leftbottom);
 			}
 
-			if ((lefttop != null) && ((lefttop.getPiece() == null) || (lefttop.getPiece().getColor() == 'w')) {
+			if ((lefttop != null) && ((lefttop.getPiece() == null) || (lefttop.getPiece().getColor() == 'w'))) {
 				stack.push(lefttop);
 			}
 
-			if ((topleft != null) && ((topleft.getPiece() == null) || (topleft.getPiece().getColor() == 'w')) {
+			if ((topleft != null) && ((topleft.getPiece() == null) || (topleft.getPiece().getColor() == 'w'))) {
 				stack.push(topleft);
 			}
 
-			if ((topright != null) && ((topright.getPiece() == null) || (topright.getPiece().getColor() == 'w')) {
+			if ((topright != null) && ((topright.getPiece() == null) || (topright.getPiece().getColor() == 'w'))) {
 				stack.push(topright);
 			}
 
-			if ((righttop != null) && ((righttop.getPiece() == null) || (righttop.getPiece().getColor() == 'w')) {
+			if ((righttop != null) && ((righttop.getPiece() == null) || (righttop.getPiece().getColor() == 'w'))) {
 				stack.push(righttop);
 			}
 
-			if ((rightbottom != null) && ((rightbottom.getPiece() == null) || (rightbottom.getPiece().getColor() == 'w')) {
+			if ((rightbottom != null) && ((rightbottom.getPiece() == null) || (rightbottom.getPiece().getColor() == 'w'))) {
 				stack.push(rightbottom);
 			}
 
-			if ((bottomright != null) && ((bottomright.getPiece() == null) || (bottomright.getPiece().getColor() == 'w')) {
+			if ((bottomright != null) && ((bottomright.getPiece() == null) || (bottomright.getPiece().getColor() == 'w'))) {
 				stack.push(bottomright);
 			}
 		}
@@ -216,18 +232,18 @@ public class Piece {
 		else if (piecetype == 'B') {
 			boolean stopCatch = false;
 			int fTemp = file;
-			int rTemp = rank
+			int rTemp = rank;
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -246,13 +262,13 @@ public class Piece {
 				fTemp = file + f;
 				rTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {				
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 									stopCatch = true;
 								}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -265,18 +281,18 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
-					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+					Tile toStack = game.getTile(rTemp, fTemp);
+					if (toStack != null) {	
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -289,18 +305,18 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
-					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+					Tile toStack = game.getTile(rTemp, fTemp);
+					if (toStack != null) {	
+						if (toStack.getPiece() != null) {					
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -317,18 +333,18 @@ public class Piece {
 		else if (piecetype == 'b') {
 			boolean stopCatch = false;
 			int fTemp = file;
-			int rTemp = rank
+			int rTemp = rank;
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {										
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -347,13 +363,13 @@ public class Piece {
 				fTemp = file + f;
 				rTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {	
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 									stopCatch = true;
 								}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -366,18 +382,18 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -390,18 +406,18 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -421,13 +437,13 @@ public class Piece {
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
 						if (toStack.getPiece() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -444,13 +460,13 @@ public class Piece {
 			for (int f = 1; fTemp >= 0; f++) {
 				fTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 									stopCatch = true;
 								}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -467,13 +483,13 @@ public class Piece {
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank + r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -486,17 +502,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -516,13 +532,13 @@ public class Piece {
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -539,13 +555,13 @@ public class Piece {
 			for (int f = 1; fTemp >= 0; f++) {
 				fTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 									stopCatch = true;
 								}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -562,13 +578,13 @@ public class Piece {
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank + r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -581,17 +597,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -608,18 +624,18 @@ public class Piece {
 		else if (piecetype == 'Q') {
 			boolean stopCatch = false;
 			int fTemp = file;
-			int rTemp = rank
+			int rTemp = rank;
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {					
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -638,13 +654,13 @@ public class Piece {
 				fTemp = file + f;
 				rTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
-									stopCatch = true;
-								}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
+								stopCatch = true;
+							}
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -657,18 +673,19 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
+			fTemp = file;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -681,18 +698,19 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
+			fTemp = file;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -705,17 +723,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int fTemp = file;
+			fTemp = file;
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -732,13 +750,13 @@ public class Piece {
 			for (int f = 1; fTemp >= 0; f++) {
 				fTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 									stopCatch = true;
 								}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -751,17 +769,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank + r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -774,17 +792,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (wPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (bPieces.contains(toStack.getPiece().getType())) {
+							else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -801,18 +819,18 @@ public class Piece {
 		else if (piecetype == 'q') {
 			boolean stopCatch = false;
 			int fTemp = file;
-			int rTemp = rank
+			int rTemp = rank;
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -831,13 +849,13 @@ public class Piece {
 				fTemp = file + f;
 				rTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 									stopCatch = true;
 								}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -850,18 +868,19 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
+			fTemp = rank;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -874,18 +893,18 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int f = 1; rTemp < 8; f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, fTemp);
+					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -898,17 +917,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int fTemp = file;
+			fTemp = file;
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -925,13 +944,13 @@ public class Piece {
 			for (int f = 1; fTemp >= 0; f++) {
 				fTemp = file - f;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rank, fTemp);
+					Tile toStack = game.getTile(rank, fTemp);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 									stopCatch = true;
 								}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -944,17 +963,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank + r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -967,17 +986,17 @@ public class Piece {
 			}
 
 			stopCatch = false;
-			int rTemp = rank;
+			rTemp = rank;
 			for (int r = 1; rTemp < 8; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
-					Tile toStack = Board.getTile(rTemp, file);
+					Tile toStack = game.getTile(rTemp, file);
 					if (toStack != null) {
-						if (toStack.getTile() != null) {
-							if (bPieces.contains(toStack.getPiece().getType())) {
+						if (toStack.getPiece() != null) {
+							if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stopCatch = true;
 							}
-							else if (wPieces.contains(toStack.getPiece().getType())) {
+							else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 								stack.push(toStack);
 								stopCatch = true;
 							}
@@ -991,26 +1010,26 @@ public class Piece {
 		}
 
 		// possible moves for a white king
-		else if (piecetype = 'K') {
+		else if (piecetype == 'K') {
 			boolean stopCatch = false;
 			int fTemp = file;
-			int rTemp = rank
-			fTemp = file + f;
-			rTemp = rank + f;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			int rTemp = rank;
+			fTemp = file + 1;
+			rTemp = rank + 1;
+			Tile toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (wPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (bPieces.contains(toStack.getPiece().getType())) {
+					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) {
+					if (game.getTile(rTemp, fTemp).isAttacked()) {
 						stopCatch = true;
 					} 
 					else stack.push(toStack);
@@ -1019,20 +1038,20 @@ public class Piece {
 
 			fTemp = file + 1;
 			rTemp = rank - 1;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (wPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (bPieces.contains(toStack.getPiece().getType())) {
+					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) {
+					if (game.getTile(rTemp, fTemp).isAttacked()) {
 						stopCatch = true;
 					} 
 					else stack.push(toStack);
@@ -1041,66 +1060,66 @@ public class Piece {
 
 			fTemp = file - 1;
 			rTemp = rank - 1;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (wPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (bPieces.contains(toStack.getPiece().getType())) {
+					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
+					if (game.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
 					else stack.push(toStack);
 				}
 			}
 
 			fTemp = file - 1;
 			rTemp = rank + 1;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (wPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (bPieces.contains(toStack.getPiece().getType())) {
+					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
+					if (game.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
 					else stack.push(toStack);
 				}
 			}
 		}
 
 		// possible moves for a black king
-		else if (piecetype = 'k') {
+		else if (piecetype == 'k') {
 			boolean stopCatch = false;
 			int fTemp = file;
-			int rTemp = rank
-			fTemp = file + f;
-			rTemp = rank + f;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			int rTemp = rank;
+			fTemp = file + 1;
+			rTemp = rank + 1;
+			Tile toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (bPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (wPieces.contains(toStack.getPiece().getType())) {
+					else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) {
+					if (game.getTile(rTemp, fTemp).isAttacked()) {
 						stopCatch = true;
 					} 
 					else stack.push(toStack);
@@ -1109,20 +1128,20 @@ public class Piece {
 
 			fTemp = file + 1;
 			rTemp = rank - 1;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (bPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (wPieces.contains(toStack.getPiece().getType())) {
+					else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) {
+					if (game.getTile(rTemp, fTemp).isAttacked()) {
 						stopCatch = true;
 					} 
 					else stack.push(toStack);
@@ -1131,47 +1150,86 @@ public class Piece {
 
 			fTemp = file - 1;
 			rTemp = rank - 1;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (bPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (wPieces.contains(toStack.getPiece().getType())) {
+					else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
+					if (game.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
 					else stack.push(toStack);
 				}
 			}
 
 			fTemp = file - 1;
 			rTemp = rank + 1;
-			Tile toStack = Board.getTile(rTemp, fTemp);
+			toStack = game.getTile(rTemp, fTemp);
 			
 			if (toStack != null) {
-				if (toStack.getTile() != null) {
-					if (bPieces.contains(toStack.getPiece().getType())) {
+				if (toStack.getPiece() != null) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stopCatch = true;
 					}
-					else if (wPieces.contains(toStack.getPiece().getType())) {
+					else if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
 						stopCatch = true;
 					}
 				}
 				else {
-					if (Board.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
+					if (game.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
 					else stack.push(toStack);
 				}
 			}
 		}
+
+		Stack<Tile> thinStack = new Stack<Tile>();
+
+		if (type == 'K' || type == 'k') { 
+			for (Tile t : stack) {
+				Piece copy = new Piece(type, color, tile);
+				tile.empty();
+				if (!t.isAttacked(copy))
+					thinStack.push(t);
+				tile.place(copy);
+			}
+		}
+
+		else if (color == 'w') {
+			Piece king = game.getWhiteKing();
+			Tile kingSpot = king.getTile();
+			for (Tile t : stack) {
+				Piece copy = new Piece(type, color, tile);
+				tile.empty();
+				t.place(copy);
+				if (!kingSpot.isAttacked()) thinStack.push(t);
+				t.empty();
+				tile.place(copy);
+			}
+		}
+
+		else {
+			Piece king = game.getBlackKing();
+			Tile kingSpot = king.getTile();
+			for (Tile t : stack) {
+				Piece copy = new Piece(type, color, tile);
+				tile.empty();
+				t.place(copy);
+				if (!kingSpot.isAttacked()) thinStack.push(t);
+				t.empty();
+				tile.place(copy);
+			}
+		}
+		return thinStack;
 	}
 
 	// unit test of methods
-	public void main(String[] args) {
+	public static void main(String[] args) {
 	}
 }
