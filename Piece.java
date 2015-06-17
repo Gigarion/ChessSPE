@@ -61,7 +61,6 @@ public class Piece {
 	}
 	// returns stack of possible moves
 	public Stack<Tile> moves() {
-		System.out.println("heyo");
 
 		Stack<Tile> stack = new Stack<Tile>();
 		char piecetype    = type;
@@ -72,7 +71,7 @@ public class Piece {
 		if (piecetype == 'P') {
 
 			// diagonal left
-			System.out.println(game.getSide());
+			//System.out.println(game.getSide());
 			Tile left = game.getTile(rank+1, file-1);
 
 			// diagonal right
@@ -253,7 +252,7 @@ public class Piece {
 			boolean stopCatch = false;
 			int fTemp = file;
 			int rTemp = rank;
-			for (int f = 1; fTemp < 8; f++) {
+			for (int f = 1; (fTemp < 8 && rTemp < 8); f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -278,7 +277,7 @@ public class Piece {
 			stopCatch = false;
 			fTemp = file;
 			rTemp = rank;
-			for (int f = 1; fTemp >= 0; f++) {
+			for (int f = 1; (fTemp < 8 && rTemp >= 0); f++) {
 				fTemp = file + f;
 				rTemp = file - f;
 				if (!stopCatch) {
@@ -302,7 +301,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (rTemp < 8 && fTemp >= 0); f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -326,7 +325,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (rTemp >= 0 && fTemp >= 0); f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
@@ -354,7 +353,7 @@ public class Piece {
 			boolean stopCatch = false;
 			int fTemp = file;
 			int rTemp = rank;
-			for (int f = 1; fTemp < 8; f++) {
+			for (int f = 1; (fTemp < 8 && rTemp < 8); f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -379,9 +378,9 @@ public class Piece {
 			stopCatch = false;
 			fTemp = file;
 			rTemp = rank;
-			for (int f = 1; fTemp >= 0; f++) {
+			for (int f = 1; (fTemp < 8 && rTemp >= 0); f++) {
 				fTemp = file + f;
-				rTemp = file - f;
+				rTemp = rank - f;
 				if (!stopCatch) {
 					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
@@ -403,7 +402,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (rTemp < 8 && fTemp >= 0); f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -427,7 +426,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (fTemp >= 0 && rTemp >= 0); f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
@@ -523,7 +522,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int r = 1; rTemp < 8; r++) {
+			for (int r = 1; rTemp >= 0; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
 					Tile toStack = game.getTile(rTemp, file);
@@ -618,7 +617,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int r = 1; rTemp < 8; r++) {
+			for (int r = 1; rTemp >= 0; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
 					Tile toStack = game.getTile(rTemp, file);
@@ -645,7 +644,7 @@ public class Piece {
 			boolean stopCatch = false;
 			int fTemp = file;
 			int rTemp = rank;
-			for (int f = 1; fTemp < 8; f++) {
+			for (int f = 1; (fTemp < 8 && rTemp < 8); f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -670,9 +669,9 @@ public class Piece {
 			stopCatch = false;
 			fTemp = file;
 			rTemp = rank;
-			for (int f = 1; fTemp >= 0; f++) {
+			for (int f = 1; (rTemp >= 0 && fTemp < 8); f++) {
 				fTemp = file + f;
-				rTemp = file - f;
+				rTemp = rank - f;
 				if (!stopCatch) {
 					Tile toStack = game.getTile(rTemp, fTemp);
 					if (toStack != null) {
@@ -695,7 +694,7 @@ public class Piece {
 			stopCatch = false;
 			rTemp = rank;
 			fTemp = file;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (fTemp >= 0 && rTemp < 8); f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -720,7 +719,7 @@ public class Piece {
 			stopCatch = false;
 			rTemp = rank;
 			fTemp = file;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (fTemp >= 0 && rTemp >= 0); f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
@@ -813,7 +812,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int r = 1; rTemp < 8; r++) {
+			for (int r = 1; rTemp >= 0; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
 					Tile toStack = game.getTile(rTemp, file);
@@ -1223,11 +1222,15 @@ public class Piece {
 		else if (color == 'w') {
 			Piece king = game.getWhiteKing();
 			Tile kingSpot = king.getTile();
+			Piece temp = null;
 			for (Tile t : stack) {
+				if (t.getPiece() != null) temp = t.getPiece();
+				else temp = null;
 				tile.empty();
 				t.place(this);
 				if (!kingSpot.isAttacked()) thinStack.push(t);
 				t.empty();
+				t.place(temp);
 				tile.place(this);
 			}
 		}
@@ -1235,15 +1238,18 @@ public class Piece {
 		else {
 			Piece king = game.getBlackKing();
 			Tile kingSpot = king.getTile();
+			Piece temp = null;
 			for (Tile t : stack) {
+				if (t.getPiece() != null) temp = t.getPiece();
+				else temp = null;
 				tile.empty();
 				t.place(this);
 				if (!kingSpot.isAttacked()) thinStack.push(t);
 				t.empty();
+				t.place(temp);
 				tile.place(this);
 			}
 		}
-		System.out.println("am i here");
 		return thinStack;
 	}
 

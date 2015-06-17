@@ -175,8 +175,11 @@ public class Board {
 		for (Tile t : validTargets) {
 			if (target.getID().equals(t.getID())) canMove = true;
 		}
-
+		System.out.println("trying");
 		if (canMove) {
+			System.out.println(target.getID());
+			//System.out.println(target.getPiece().getType());
+			System.out.println("can");
 			if (target.getPiece() != null) {
 				Piece toKill = target.getPiece();
 				LinkedList<Piece> removal = new LinkedList<Piece>();
@@ -187,7 +190,7 @@ public class Board {
 					removal = game.getBlackPieces();
 				
 				for (Piece p : removal) {
-					if (!p.getTile().getID().equals(toKill.getTile().getID()))
+					if (!p.getTile().getID().equals(toKill.getTile().getID())) 
 						newSet.add(p);
 				}
 
@@ -196,12 +199,14 @@ public class Board {
 				}
 				else {
 					game.setBlackPieces(newSet);
+					System.out.println("working");
 				}
 				toKill.moveTo(null);
 			} 
 			toMove.getTile().empty();
 			target.place(toMove);
-			toMove.moveTo(target);	
+			toMove.moveTo(target);
+			game.flip();	
 		}
 	}
 

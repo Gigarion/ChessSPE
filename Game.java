@@ -7,6 +7,8 @@ public class Game {
 	// list of all white pieces
 	private static String whitePieceTypes = "PNBRQK";
 
+	private boolean isHighlighted;
+
 	// side to move
 	private char side;
 
@@ -14,6 +16,9 @@ public class Game {
 
 	// list of moves made in the game
 	private Stack<String> movehistory;
+
+	// holds a highlighted piece
+	private Piece tempHold;
 
 	// 50 move rule: 50 moves without a
 	// capture constitutes a draw
@@ -59,14 +64,25 @@ public class Game {
 		}
 	}
 
-	public Game(char side, Stack<String> movehistory, int half, int threerep, Tile ep, boolean[] castlingrights) {
-		this.side           = side;
-		this.isFlipped      = false;
-		this.movehistory    = movehistory;
-		this.halfMoves      = half;
-		this.ep             = ep;
-		this.castlingrights = castlingrights;
-		this.board = new Board();
+	public void setHighlight(boolean b) {
+		isHighlighted = b;
+		System.out.println("****HL:  " + b);
+	}
+
+	public boolean getHighlight() {
+		return isHighlighted;
+	}
+
+	public void hold(Piece p) {
+		tempHold = p;
+	}
+
+	public Piece getHold() {
+		return tempHold;
+	}
+
+	public void endHold() {
+		tempHold = null;
 	}
 
 	public Tile[][] getTiles() {
@@ -163,6 +179,8 @@ public class Game {
 
 	public void flip() {
 		isFlipped = !isFlipped;
+		if (side == 'w') side = 'b';
+		else side = 'w';
 	}
 
 	public boolean getFlip() {
@@ -267,6 +285,7 @@ public class Game {
 						currentPiece.setColor('w');
 					}
 					else currentPiece.setColor('b');
+
 					currentTile.place(currentPiece);
 					currentPiece.moveTo(currentTile);
 					currentPiece.setGame(this);
@@ -315,36 +334,23 @@ public class Game {
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.setFEN("rnbqkbnr/pppppppp/8/3p4/4P3/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+		game.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 		
 		Tile[][] tiles = game.getTiles();
 
 		for (Piece p : game.getWhitePieces()) {
-			System.out.println(p.getType());
+			System.out.println(p.getTile().getID());
 		}
 		System.out.println("end white");
 		for (Piece p : game.getBlackPieces()) {
-			System.out.println(p.getType());
+			System.out.println(p.getTile().getID());
 		}
 		long a = System.currentTimeMillis();
 
 		
 		System.out.println("end black");
 		game.draw();
-		do {} while (System.currentTimeMillis() - a < 1000);
-		Piece toMove = tiles[3][4].getPiece();
-		System.out.println(toMove == null);
-		game.move(toMove, tiles[4][3]);
-		for (Piece p : game.getWhitePieces()) {
-			System.out.println(p.getType());
-		}
-		System.out.println("end white");
-		for (Piece p : game.getBlackPieces()) {
-			System.out.println(p.getType());
-		}
-		System.out.println("end black");
 		game.draw();
-		game.flip();
 		a = System.currentTimeMillis();
 		do {} while (System.currentTimeMillis() - a < 1000);
 		game.draw();

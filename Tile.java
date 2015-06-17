@@ -4,8 +4,6 @@ import javax.swing.*;
 
 public class Tile extends JPanel implements MouseListener
 {
-    
-
     //instance variables for identiying the tiles,
     //establishes empty tile, and size of tile
     private String iD;
@@ -20,24 +18,58 @@ public class Tile extends JPanel implements MouseListener
         this.iD = id;
     }
 
+    private void darken() {
+        game.setHighlight(false);
+        game.endHold();
+        game.draw();
+    }
+
+    private void highlightMoves() {
+        for (Tile t : piece.moves()) {
+            System.out.println(t.getID());
+        }
+    }
+
     public void mouseClicked(MouseEvent e) {
         System.out.println("Mouse Clicked at " + e.getX() + "," + e.getY() + " " + iD);
+        if (!game.getHighlight()) {
+            if (piece != null) {
+                System.out.println("Piece has moves: " + !piece.moves().empty());
+                if (piece.getColor() == game.getSide() && !piece.moves().empty()) {
+                    game.setHighlight(true);
+                    highlightMoves();
+                    game.hold(piece);
+                }
+                else if (piece.moves().empty()) {
+                    darken();
+                }
+            }
+        }
+        else {
+            for (Tile t : game.getHold().moves()) {
+                if (t.getID().equals(iD)) {
+                    game.move(game.getHold(), this);
+                    darken();
+                }
+            }
+            darken();
+        }
     }
 
     public void mouseEntered(MouseEvent e) {
-        System.out.println("Mouse Entered at " + e.getX() + "," + e.getY());
+        //System.out.println("Mouse Entered at " + e.getX() + "," + e.getY());
     }
 
     public void mouseExited(MouseEvent e) {
-        System.out.println("Mouse Exited at " + e.getX() + "," + e.getY());
+        //System.out.println("Mouse Exited at " + e.getX() + "," + e.getY());
     }
 
     public void mousePressed(MouseEvent e) {
-        System.out.println("Mouse Pressed at " + e.getX() + "," + e.getY());
+        //System.out.println("Mouse Pressed at " + e.getX() + "," + e.getY());
     }
     
     public void mouseReleased(MouseEvent e) {
-        System.out.println("Mouse Released at " + e.getX() + "," + e.getY());
+        System.out.println("Mouse Released at " + e.getX() + "," + e.getY() + " " + iD);
     }
 
     public void setGame(Game g) {
@@ -97,7 +129,6 @@ public class Tile extends JPanel implements MouseListener
             label = new JLabel(icon1);
         }
         else {
-            System.out.println("I'm correct");
             label = new JLabel();
         }
 
@@ -201,8 +232,7 @@ public class Tile extends JPanel implements MouseListener
     }
     
     //place a piece on the tile
-    public void place(Piece p)
-    {
+    public void place(Piece p) {
         this.piece = p;
     }
 
@@ -791,17 +821,5 @@ public class Tile extends JPanel implements MouseListener
     }
 
     public static void main(String[] args) {
-/*
-        Tile test = new Tile("00");
-        Piece piece = new Piece('k', 'b', test);
-        test.place(piece);
-
-        JFrame frame = new JFrame("Chess SPE");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(1, 1));
-        test.set(frame);
-        frame.setSize(480, 480);
-        frame.pack();
-        frame.setVisible(true);*/
     }
 }
