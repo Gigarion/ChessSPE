@@ -61,6 +61,7 @@ public class Piece {
 	}
 	// returns stack of possible moves
 	public Stack<Tile> moves() {
+		System.out.println("heyo");
 
 		Stack<Tile> stack = new Stack<Tile>();
 		char piecetype    = type;
@@ -1242,6 +1243,7 @@ public class Piece {
 				tile.place(this);
 			}
 		}
+		System.out.println("am i here");
 		return thinStack;
 	}
 

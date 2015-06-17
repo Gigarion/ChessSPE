@@ -1,10 +1,14 @@
 import java.util.Stack;
 import java.util.Queue;
 import java.util.LinkedList;
+import javax.swing.*;
+import java.awt.*;
+
 public class Board {
 	private Tile[][] tiles = new Tile[8][8];
 	private LinkedList<Piece> wPieces;
 	private LinkedList<Piece> bPieces;
+	private JFrame frame;
 	private Game game;
 	private static final double tileStartX = 0;
 	private static final double tileStartY = 0;
@@ -13,6 +17,10 @@ public class Board {
 	private static final double displacement = 1;
 	
 	public Board() { // constructor;
+		frame = new JFrame("Chess SPE");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(8, 8));
+        frame.setSize(480, 480);
 		wPieces = new LinkedList<Piece>();
 		bPieces = new LinkedList<Piece>();
 		for (int r = 0; r < 8; r++) { // creates 8 x 8 grid of tiles
@@ -23,29 +31,43 @@ public class Board {
 				this.tiles[r][c] = new Tile(tileId.toString());
 			}
 		}
+		frame.pack();
+        frame.setVisible(true);
 	}
 
 	public void setGame(Game g) {
 		game = g;
 	}
 
+	public void clear() {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				tiles[i][j].empty();
+			}
+		}
+	}
+
 	public void draw() { // draws current state of the board
-		StdDraw.setXscale(-1, 8);
-		StdDraw.setYscale(-1, 8);
+		frame.getContentPane().removeAll();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(8, 8));
+        frame.setSize(480, 480);
 		if (!game.getFlip()) {
 			for (int r = 0; r < 8; r++) {
 				for (int c = 0; c < 8; c++) {
-					tiles[r][c].draw((tileStartX + (c * displacement)), (tileStartY + (r * displacement)));
+					frame.add(tiles[7 - r][c].set());
 				}
 			}
 		}
 		else {
 			for (int r = 0; r < 8; r++) {
 				for (int c = 0; c < 8; c++) {
-					tiles[r][c].draw((fTileStartX - (c * displacement)), (fTileStartY - (r * displacement)));
+					frame.add(tiles[r][7 - c].set());
 				}
 			}
-		} 
+		}
+		frame.pack();
+        frame.setVisible(true); 
 	}
 
 	public boolean isFlipped() { // returns whether or not the board is flipped (black at bottom)
@@ -179,7 +201,7 @@ public class Board {
 			} 
 			toMove.getTile().empty();
 			target.place(toMove);
-			toMove.moveTo(target);
+			toMove.moveTo(target);	
 		}
 	}
 
@@ -193,8 +215,8 @@ public class Board {
 	}
 
 	public static void main(String[] args) {
-		Board tester = new Board();
-		tester.reset();
-		tester.draw();
+		Game game = new Game();
+		game.reset();
+		game.draw();
 	}
 }

@@ -73,6 +73,10 @@ public class Game {
 		return tiles;
 	}
 
+	public void reset() {
+		board.reset();
+	}
+
 	public void setWhitePieces(LinkedList<Piece> white) {
 		wPieces = white;
 	}
@@ -165,12 +169,68 @@ public class Game {
 		return isFlipped;
 	}
 
+	public void init() {
+		board.draw();
+	}
+
 	public void draw() {
 		board.draw();
 	}
 
 	public void move(Piece p, Tile target) {
 		board.move(p, target);
+	}
+
+			public boolean mateCheck() {
+		Stack<Piece> stack = new Stack<Piece>();
+		LinkedList<Piece> pieces;
+		Piece oppking;
+		if (getSide() == 'w') {
+			pieces  = getBlackPieces();
+			oppking = getBlackKing();
+		} else {
+			pieces  = getWhitePieces();
+			oppking = getWhiteKing();
+		}
+
+		// push all pieces with valid moves onto the stack
+		for (Piece piece: pieces) {
+			if (!piece.moves().isEmpty()) {
+				stack.push(piece);
+			}
+		}
+
+		if (stack.isEmpty()) {
+			if (oppking.getTile().isAttacked()) return true;
+		}
+
+		return false;
+	}
+
+	public boolean drawCheck() {
+		Stack<Piece> stack = new Stack<Piece>();
+		LinkedList<Piece> pieces;
+		Piece oppking;
+		if (getSide() == 'w') {
+			pieces  = getBlackPieces();
+			oppking = getBlackKing();
+		} else {
+			pieces  = getWhitePieces();
+			oppking = getWhiteKing();
+		}
+
+		// push all pieces with valid moves onto the stack
+		for (Piece piece: pieces) {
+			if (!piece.moves().isEmpty()) {
+				stack.push(piece);
+			}
+		}
+
+		if (stack.isEmpty()) {
+			if (!oppking.getTile().isAttacked()) return true;
+		}
+
+		return false;
 	}
 
 	// sets the Gameboard to the current FEN string
@@ -242,11 +302,12 @@ public class Game {
 		setCastlingRights(wkc, wqc, bkc, bqc);
 
 		// the en-passant square, if one exists
-		if (getEP() == null) {
+		if (fensplit[3].length() > 1) {
 			int rank = (int) (fensplit[3].charAt(0)) - 97;
 			int file = Character.getNumericValue(fensplit[3].charAt(1));
 			setEP(getTile(rank, file));
 		}
+		else setEP(null);
 
 		// number of half moves since the last capture or pawn advance
 		setHalfMoves(Integer.parseInt(fensplit[4]));
@@ -254,7 +315,7 @@ public class Game {
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.setFEN("rnbqkbnr/pppppppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
+		game.setFEN("rnbqkbnr/pppppppp/8/3p4/4P3/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 		
 		Tile[][] tiles = game.getTiles();
 
@@ -265,25 +326,27 @@ public class Game {
 		for (Piece p : game.getBlackPieces()) {
 			System.out.println(p.getType());
 		}
+		long a = System.currentTimeMillis();
+
+		
 		System.out.println("end black");
 		game.draw();
-		StdDraw.show(1000);
-		Piece toMove = tiles[4][3].getPiece();
-		game.move(toMove, tiles[3][4]);
+		do {} while (System.currentTimeMillis() - a < 1000);
+		Piece toMove = tiles[3][4].getPiece();
+		System.out.println(toMove == null);
+		game.move(toMove, tiles[4][3]);
 		for (Piece p : game.getWhitePieces()) {
 			System.out.println(p.getType());
-			
 		}
 		System.out.println("end white");
 		for (Piece p : game.getBlackPieces()) {
 			System.out.println(p.getType());
-
 		}
 		System.out.println("end black");
 		game.draw();
-		StdDraw.show(1000);
 		game.flip();
+		a = System.currentTimeMillis();
+		do {} while (System.currentTimeMillis() - a < 1000);
 		game.draw();
-		StdDraw.show(1000);
 	}
 }

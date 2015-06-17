@@ -21,7 +21,7 @@ public class Tile extends JPanel implements MouseListener
     }
 
     public void mouseClicked(MouseEvent e) {
-        System.out.println("Mouse Clicked at " + e.getX() + "," + e.getY());
+        System.out.println("Mouse Clicked at " + e.getX() + "," + e.getY() + " " + iD);
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -50,8 +50,15 @@ public class Tile extends JPanel implements MouseListener
         return this.iD;
     }
 
+    public boolean occupied() {
+        if (piece == null) {
+            return false;
+        }
+        else return true;
+    }
+
     //draw the tile based on its id
-    public void set(JFrame frame)
+    public JLabel set()
     {
         if (piece != null) {
             ImageIcon icon1 = createImageIcon(getImage(), "piece");
@@ -80,7 +87,39 @@ public class Tile extends JPanel implements MouseListener
         // set the square size
         Dimension dimension = new Dimension(60, 60);
         label.setPreferredSize(dimension);
-        frame.add(label);
+        //frame.add(label);
+        return label;
+    }
+
+    public void update() {
+        if (piece != null) {
+            ImageIcon icon1 = createImageIcon(getImage(), "piece");
+            label = new JLabel(icon1);
+        }
+        else {
+            System.out.println("I'm correct");
+            label = new JLabel();
+        }
+
+        label.addMouseListener(this);
+
+        int rank = Character.getNumericValue(iD.charAt(0));
+        int file = Character.getNumericValue(iD.charAt(1));
+        Color color;
+
+        if ((rank + file) % 2 == 0) {
+            color = Color.BLUE;
+        }
+        else {
+            color = Color.WHITE;
+        }
+
+        label.setBackground(color);
+        label.setOpaque(true);
+
+        // set the square size
+        Dimension dimension = new Dimension(60, 60);
+        label.setPreferredSize(dimension);
     }
 
     protected ImageIcon createImageIcon(String path, String description) {
@@ -92,6 +131,8 @@ public class Tile extends JPanel implements MouseListener
             return null;
         }
     }
+
+
 
     //draws the different chess pieces at a tile
     public String getImage()
@@ -749,8 +790,8 @@ public class Tile extends JPanel implements MouseListener
         return piece;
     }
 
-        public static void main(String[] args) {
-
+    public static void main(String[] args) {
+/*
         Tile test = new Tile("00");
         Piece piece = new Piece('k', 'b', test);
         test.place(piece);
@@ -761,6 +802,6 @@ public class Tile extends JPanel implements MouseListener
         test.set(frame);
         frame.setSize(480, 480);
         frame.pack();
-        frame.setVisible(true);
+        frame.setVisible(true);*/
     }
 }
