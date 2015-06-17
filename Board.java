@@ -70,6 +70,11 @@ public class Board {
         frame.setVisible(true); 
 	}
 
+	public void show() {
+		frame.pack();
+		frame.setVisible(true);
+	}
+
 	public boolean isFlipped() { // returns whether or not the board is flipped (black at bottom)
 		return game.getFlip();
 	}

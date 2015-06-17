@@ -839,7 +839,7 @@ public class Piece {
 			boolean stopCatch = false;
 			int fTemp = file;
 			int rTemp = rank;
-			for (int f = 1; fTemp < 8; f++) {
+			for (int f = 1; (fTemp < 8 && rTemp < 8); f++) {
 				fTemp = file + f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -864,7 +864,7 @@ public class Piece {
 			stopCatch = false;
 			fTemp = file;
 			rTemp = rank;
-			for (int f = 1; fTemp >= 0; f++) {
+			for (int f = 1; (rTemp >= 0 && fTemp < 8); f++) {
 				fTemp = file + f;
 				rTemp = file - f;
 				if (!stopCatch) {
@@ -889,7 +889,7 @@ public class Piece {
 			stopCatch = false;
 			rTemp = rank;
 			fTemp = rank;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (fTemp >= 0 && rTemp < 8); f++) {
 				fTemp = file - f;
 				rTemp = rank + f;
 				if (!stopCatch) {
@@ -913,7 +913,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int f = 1; rTemp < 8; f++) {
+			for (int f = 1; (fTemp >= 0 && rTemp >=0); f++) {
 				fTemp = file - f;
 				rTemp = rank - f;
 				if (!stopCatch) {
@@ -1006,7 +1006,7 @@ public class Piece {
 
 			stopCatch = false;
 			rTemp = rank;
-			for (int r = 1; rTemp < 8; r++) {
+			for (int r = 1; rTemp >= 0; r++) {
 				rTemp = rank - r;
 				if (!stopCatch) {
 					Tile toStack = game.getTile(rTemp, file);
@@ -1030,7 +1030,6 @@ public class Piece {
 
 		// possible moves for a white king
 		else if (piecetype == 'K') {
-			boolean stopCatch = false;
 			int fTemp = file;
 			int rTemp = rank;
 			fTemp = file + 1;
@@ -1039,19 +1038,12 @@ public class Piece {
 			
 			if (toStack != null) {
 				if (toStack.getPiece() != null) {
-					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
-						stopCatch = true;
-					}
-					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
-						stopCatch = true;
 					}
 				}
 				else {
-					if (game.getTile(rTemp, fTemp).isAttacked()) {
-						stopCatch = true;
-					} 
-					else stack.push(toStack);
+					stack.push(toStack);
 				}
 			}
 
@@ -1061,19 +1053,12 @@ public class Piece {
 			
 			if (toStack != null) {
 				if (toStack.getPiece() != null) {
-					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
-						stopCatch = true;
-					}
-					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
-						stopCatch = true;
 					}
 				}
 				else {
-					if (game.getTile(rTemp, fTemp).isAttacked()) {
-						stopCatch = true;
-					} 
-					else stack.push(toStack);
+					stack.push(toStack);
 				}
 			}
 
@@ -1083,17 +1068,12 @@ public class Piece {
 			
 			if (toStack != null) {
 				if (toStack.getPiece() != null) {
-					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
-						stopCatch = true;
-					}
-					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
-						stopCatch = true;
 					}
 				}
 				else {
-					if (game.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
-					else stack.push(toStack);
+					stack.push(toStack);
 				}
 			}
 
@@ -1103,17 +1083,12 @@ public class Piece {
 			
 			if (toStack != null) {
 				if (toStack.getPiece() != null) {
-					if (wPieces.indexOf(toStack.getPiece().getType()) != -1) {
-						stopCatch = true;
-					}
-					else if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
+					if (bPieces.indexOf(toStack.getPiece().getType()) != -1) {
 						stack.push(toStack);
-						stopCatch = true;
 					}
 				}
 				else {
-					if (game.getTile(rTemp, fTemp).isAttacked()) stopCatch = true;
-					else stack.push(toStack);
+					stack.push(toStack);
 				}
 			}
 		}

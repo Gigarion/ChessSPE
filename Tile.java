@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.Stack;
 
 public class Tile extends JPanel implements MouseListener
 {
@@ -24,11 +25,50 @@ public class Tile extends JPanel implements MouseListener
         game.draw();
     }
 
-    private void highlightMoves() {
-        for (Tile t : piece.moves()) {
-            System.out.println(t.getID());
+
+
+    public void highlightMoves() 
+    {
+        Stack<Tile> tiles = piece.moves();
+        for (Tile currentTile: tiles)
+        {
+            if (currentTile.getID().equals(iD))
+            {
+                ImageIcon icon1 = createImageIcon(getImage(), "piece");
+                label = new JLabel(icon1);
+                
+                label.addMouseListener(this);
+                
+                Color color;
+                color = Color.YELLOW;
+                
+                label.setBackground(color);
+                label.setOpaque(true);
+                
+                // set the square size
+                Dimension dimension = new Dimension(60, 60);
+                label.setPreferredSize(dimension);
+                
+            }
+            game.show();
         }
     }
+
+// public void dehighlightMoves() 
+// {
+//     Stack<Tile> tiles = getPiece.moves();
+    
+//     for (Tile currentTile: tiles)
+//     {
+//         tile.update();
+//     }
+// }
+
+
+
+
+
+
 
     public void mouseClicked(MouseEvent e) {
         System.out.println("Mouse Clicked at " + e.getX() + "," + e.getY() + " " + iD);
@@ -535,7 +575,7 @@ public class Tile extends JPanel implements MouseListener
         int fTemp = file;
         boolean stopCatch = false;
         if (piece != null) {
-            for (int i = 1; i < 8; i++) {
+            for (int i = 1; fTemp < 8; i++) {
                 fTemp = file + i;
                 if (!stopCatch && game.getTile(rank, fTemp) != null) {
                     if (p.getColor() == 'w') {
@@ -558,7 +598,7 @@ public class Tile extends JPanel implements MouseListener
             }
 
             stopCatch = false;
-            for (int i = 1; i < 8; i++) {
+            for (int i = 1; fTemp >= 0; i++) {
                 fTemp = file - i;
                 if (!stopCatch && game.getTile(rank, fTemp) != null) {
                     if (p.getColor() == 'w') {

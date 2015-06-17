@@ -64,6 +64,10 @@ public class Game {
 		}
 	}
 
+	public void show() {
+		board.show();
+	}
+
 	public void setHighlight(boolean b) {
 		isHighlighted = b;
 		System.out.println("****HL:  " + b);
