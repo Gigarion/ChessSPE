@@ -26,6 +26,9 @@ public class Piece {
 		this.tile  = tile;
 	}
 
+	public Piece() {
+	}
+
 	// returns the piece type
 	public char getType() {
 		return type;
@@ -54,7 +57,6 @@ public class Piece {
 	}
 
 	public void setGame(Game g) {
-		System.out.println(g.getSide());
 		this.game = g;
 	}
 	// returns stack of possible moves
@@ -1210,11 +1212,10 @@ public class Piece {
 
 		if (type == 'K' || type == 'k') { 
 			for (Tile t : stack) {
-				Piece copy = new Piece(type, color, tile);
 				tile.empty();
-				if (!t.isAttacked(copy))
+				if (!t.isAttacked(this))
 					thinStack.push(t);
-				tile.place(copy);
+				tile.place(this);
 			}
 		}
 
@@ -1222,12 +1223,11 @@ public class Piece {
 			Piece king = game.getWhiteKing();
 			Tile kingSpot = king.getTile();
 			for (Tile t : stack) {
-				Piece copy = new Piece(type, color, tile);
 				tile.empty();
-				t.place(copy);
+				t.place(this);
 				if (!kingSpot.isAttacked()) thinStack.push(t);
 				t.empty();
-				tile.place(copy);
+				tile.place(this);
 			}
 		}
 
@@ -1235,12 +1235,11 @@ public class Piece {
 			Piece king = game.getBlackKing();
 			Tile kingSpot = king.getTile();
 			for (Tile t : stack) {
-				Piece copy = new Piece(type, color, tile);
 				tile.empty();
-				t.place(copy);
+				t.place(this);
 				if (!kingSpot.isAttacked()) thinStack.push(t);
 				t.empty();
-				tile.place(copy);
+				tile.place(this);
 			}
 		}
 		return thinStack;

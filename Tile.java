@@ -1,16 +1,43 @@
-public class Tile
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Tile extends JPanel implements MouseListener
 {
+    
+
     //instance variables for identiying the tiles,
     //establishes empty tile, and size of tile
     private String iD;
     private Game game;
     private Piece piece;
-    private static double r = 0.5;
+    private JLabel label;
+    private static final double r = 0.5;
    
     //constructor of tile
     public Tile(String id)
     {
         this.iD = id;
+    }
+
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("Mouse Clicked at " + e.getX() + "," + e.getY());
+    }
+
+    public void mouseEntered(MouseEvent e) {
+        System.out.println("Mouse Entered at " + e.getX() + "," + e.getY());
+    }
+
+    public void mouseExited(MouseEvent e) {
+        System.out.println("Mouse Exited at " + e.getX() + "," + e.getY());
+    }
+
+    public void mousePressed(MouseEvent e) {
+        System.out.println("Mouse Pressed at " + e.getX() + "," + e.getY());
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+        System.out.println("Mouse Released at " + e.getX() + "," + e.getY());
     }
 
     public void setGame(Game g) {
@@ -24,66 +51,83 @@ public class Tile
     }
 
     //draw the tile based on its id
-    public void draw(double x0, double y0)
+    public void set(JFrame frame)
     {
-        StdDraw.setPenColor(StdDraw.BLUE);
-        StdDraw.square(x0, y0, r);
-        
-        //int i is the first integer of iD and int j is
-        //the second integer of the iD
-        int i = Character.getNumericValue(iD.charAt(0));
-        int j = Character.getNumericValue(iD.charAt(1));
-        
-        //determine the color of each tile. if sum of the
-        //i and j is even (black) or odd (white)
-        if((i+j) % 2 == 0)
-        {
-            StdDraw.setPenColor(StdDraw.BLUE);
-            StdDraw.filledSquare(x0, y0, r);
+        if (piece != null) {
+            ImageIcon icon1 = createImageIcon(getImage(), "piece");
+            label = new JLabel(icon1);
         }
-        else
-        {
-            StdDraw.setPenColor(StdDraw.WHITE);
-            StdDraw.filledSquare(x0, y0, r);
+        else {
+            label = new JLabel();
         }
-        if (piece != null)
-            drawPiece(piece, x0, y0);
 
-        StdDraw.show(25);
+        label.addMouseListener(this);
+
+        int rank = Character.getNumericValue(iD.charAt(0));
+        int file = Character.getNumericValue(iD.charAt(1));
+        Color color;
+
+        if ((rank + file) % 2 == 0) {
+            color = Color.BLUE;
+        }
+        else {
+            color = Color.WHITE;
+        }
+
+        label.setBackground(color);
+        label.setOpaque(true);
+
+        // set the square size
+        Dimension dimension = new Dimension(60, 60);
+        label.setPreferredSize(dimension);
+        frame.add(label);
+    }
+
+    protected ImageIcon createImageIcon(String path, String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        }
+        else {
+            return null;
+        }
     }
 
     //draws the different chess pieces at a tile
-    public void drawPiece(Piece p, double x0, double y0)
+    public String getImage()
     {
         //if there is no piece, it will not draw
-        if (piece == null) return;
+        if (piece == null) return null;
         
+        //if there are pieces with capital letters, it
+        //will draw the white pieces for bishops, queens, kings,
+        //rooks, pawns, and knights
         //if there are pieces with capital letters, it
         //will draw the white pieces for bishops, queens, kings,
         //rooks, pawns, and knights
         else if (piece.getType() == 'B')
         {
-            StdDraw.picture(x0, y0, "images\\wB.png");
+            return "images/wB.png";
         }
         else if (piece.getType() == 'K')
         {
-            StdDraw.picture(x0, y0, "images\\wK.png");
+            return "images/wK.png";
         }
         else if (piece.getType() == 'N')
         {
-            StdDraw.picture(x0, y0, "images\\wN.png");
+            return "images/wN.png";
         }
         else if (piece.getType() == 'P')
         {
-            StdDraw.picture(x0, y0, "images\\wP.png");
+            return "images/wP.png";
         }
         else if (piece.getType() == 'Q')
         {
-            StdDraw.picture(x0, y0, "images\\wQ.png");
+            return "images/wQ.png";
         }
         else if (piece.getType() == 'R')
         {
-            StdDraw.picture(x0, y0, "images\\wR.png");
+            return "images/wR.png";
         }
         
         //if there are piece.getType()s with lowercase letters, it
@@ -91,28 +135,28 @@ public class Tile
         //rooks, pawns, and knights
         else if (piece.getType() == 'b')
         {
-            StdDraw.picture(x0, y0, "images\\bB.png");
+            return "images/bB.png";
         }
         else if (piece.getType() == 'k')
         {
-            StdDraw.picture(x0, y0, "images\\bK.png");
+            return "images/bK.png";
         }
         else if (piece.getType() == 'n')
         {
-            StdDraw.picture(x0, y0, "images\\bN.png");
+            return "images/bN.png";
         }
         else if (piece.getType() == 'p')
         {
-            StdDraw.picture(x0, y0, "images\\bP.png");
+            return "images/bP.png";
         }
         else if (piece.getType() == 'q')
         {
-            StdDraw.picture(x0, y0, "images\\bQ.png");
+            return "images/bQ.png";
         }
         else if (piece.getType() == 'r')
         {
-            StdDraw.picture(x0, y0, "images\\bR.png");
-        }
+            return "images/bR.png";
+        } else return null;
     }
     
     //place a piece on the tile
@@ -703,5 +747,20 @@ public class Tile
     public Piece getPiece()
     {
         return piece;
+    }
+
+        public static void main(String[] args) {
+
+        Tile test = new Tile("00");
+        Piece piece = new Piece('k', 'b', test);
+        test.place(piece);
+
+        JFrame frame = new JFrame("Chess SPE");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(1, 1));
+        test.set(frame);
+        frame.setSize(480, 480);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
