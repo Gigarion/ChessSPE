@@ -85,6 +85,55 @@ public class AI
         {-50 ,   -10 ,   0   ,   0   ,   0   ,   0   ,   -10 ,   -50 }, 
     };
 
+    private static final File MATEFILE = new File("mateHistory.txt");
+    private HashMap<String, Integer> checkMap = new HashMap<String, Integer>();
+    private HashMap<String, TPData> tpTable = new HashMap<String, TPData>();
+
+    // records the state of the game
+    private boolean endgame = false;
+
+    // returns the state of the game
+    public boolean getEndgame() { return endgame; }
+
+    // sets the state of the game
+    public void setEndgame(boolean endgame) { this.endgame = endgame; }
+
+    // determines whether or not the endgame has been reached
+    
+    public AI(Game game, int level) throws IOException
+    {
+        this.game = game;
+        this.level = level;
+        this.pvtable = new PVTable();
+        setCheckMap();
+        if (game.getSide() == 'w') { pieces = game.getWhitePieces(); }
+        else { pieces = game.getBlackPieces(); }
+    }
+
+    public void isEndgame() {
+
+        int whitematerial = 0;
+        int blackmaterial = 0;
+
+        // counts up the total value of the white pieces
+        LinkedList<Piece> wPieces = game.getWhitePieces();
+        for (Piece piece: wPieces) {
+            whitematerial += piece.getValue();
+        }
+
+        // counts up the total value of the black pieces
+        LinkedList<Piece> bPieces = game.getBlackPieces();
+        for (Piece piece: bPieces) {
+            blackmaterial += piece.getValue();
+        }
+
+        // endgame defined as both sides having less than a rook, minor piece and pawn
+        int endgamematerial = 500 + 300 + 100;
+
+        if (whitematerial <= endgamematerial && blackmaterial <= endgamematerial) { endgame = true; }
+        endgame = false;
+    }
+
     private final static int MATE = 1;
 
     private final static int DRAW = 0;
@@ -99,15 +148,6 @@ public class AI
 
     // list of pieces for the side that moves
     private LinkedList<Piece> pieces;
-    
-    public AI(Game game, int level)
-    {
-        this.game = game;
-        this.level = level;
-        this.pvtable = new PVTable();
-        if (game.getSide() == 'w') { pieces = game.getWhitePieces(); }
-        else { pieces = game.getBlackPieces(); }
-    }
 
     // returns the current AI's level of difficulty
     public int getLevel() { return level; }
@@ -201,8 +241,7 @@ public class AI
     }
 
     //chooses random tile from random pieces in the linkedlist
-    public void makeRandomAIMove()
-    {
+    public void makeRandomAIMove() throws IOException {
 
         // to keep track of pieces with legal moves
         Stack<Piece> stack = new Stack<Piece>();
@@ -244,10 +283,11 @@ public class AI
 
     }
 
-    public Move getMove(int maxDepth, Move move, boolean isMaximizer) {
+    public Move getMove(int maxDepth, Move move, boolean isMaximizer) throws IOException {
         int alpha = Integer.MIN_VALUE;
         int beta  = Integer.MAX_VALUE;
         int temp = 0;
+        tpTable.clear();
         switch(level) {
             case 0: temp = 0; break;
             case 1: temp = getNextLevelChild(maxDepth, move, isMaximizer, alpha, beta); System.out.println("NextLevel"); break;
@@ -269,7 +309,7 @@ public class AI
     int fh  = 0;
     int test = 0;
 
-    private int getCVVictus(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) {
+    private int getCVVictus(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) throws IOException {
         if (maxDepth <= 0) {
             // if this is a leaf, find the value of the current board,
             // set it as the value of this move, and return this move
@@ -378,7 +418,7 @@ public class AI
         }
     }
 
-    private int getNextLevelChild(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) {
+    private int getNextLevelChild(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) throws IOException {
         if (maxDepth == 0) {
             // if this is a leaf, find the value of the current board,
             // set it as the value of this move, and return this move
@@ -488,13 +528,41 @@ public class AI
         }
     }
 
-    private int getNemoValue(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) {
+    private int getNemoValue(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) throws IOException {
 
         if (maxDepth <= 0) {
             // if this is a leaf, find the value of the current board,
             // set it as the value of this move, and return this move
             //System.out.println(game.createFEN());
             return evaluateScore();
+        }
+
+
+        if (tpTable.get(game.createFEN()) != null) {
+            if (tpTable.get(game.createFEN()).getDepth() <= maxDepth) {
+                TPData current = tpTable.get(game.createFEN());
+                if (isMaximizer) {
+                    if (current.getScore() >= beta)
+                        return beta;
+                    else if (current.getScore() < alpha)
+                        return alpha;
+                    else {
+                        move.setBestChild(current.getBestChild());
+                        alpha = current.getScore();
+                    } 
+                }
+
+                else {
+                    if (current.getScore() <= alpha)
+                        return alpha;
+                    else if (current.getScore() > beta)
+                        return beta;
+                    else {
+                       move.setBestChild(current.getBestChild());
+                       beta = current.getScore(); 
+                    } 
+                }
+            }
         }
 
         int thisValue = 0;
@@ -521,11 +589,19 @@ public class AI
             if (p.getTile() != null) {
                 for (Tile t : p.moves()) {
                     Move toAdd = new Move(p, t);
+                    if (move.getBestChild() != null) {
+                        if (move.getBestChild().getTarget().equals(toAdd.getTarget()) && move.getBestChild().getOrigin().equals(toAdd.getOrigin()))
+                            toAdd.isTP();
+                    }
+                    if (pvtable.isMove(maxDepth, toAdd))
+                        toAdd.isPV();
                     moveList.add(toAdd);
                 }
             }
         }
+
         Collections.sort(moveList);
+
         if (moveList.isEmpty()) {
             int whiteMoveCount = 0;
             int blackMoveCount = 0;
@@ -545,11 +621,17 @@ public class AI
                 }
             }
             if (whiteMoveCount == 0) {
-                if (wKing.getTile().isAttacked()) return -10000;
+                if (wKing.getTile().isAttacked()) {
+                    saveMove(-10000);
+                    return -10000;
+                }
                 return 0;
             }
             else if (blackMoveCount == 0) {
-                if (bKing.getTile().isAttacked()) return 10000;
+                if (bKing.getTile().isAttacked()) {
+                    saveMove(10000);
+                    return 10000;
+                }
                 return 0;
             }
         }
@@ -577,6 +659,8 @@ public class AI
                     pvtable.addMove(maxDepth, m);
                 }
             }
+            TPData toSave = new TPData(maxDepth, move.getBestChild(), thisValue);
+            tpTable.put(game.createFEN(), toSave);
             return alpha;
         }
 
@@ -597,11 +681,13 @@ public class AI
                     pvtable.addMove(maxDepth, m);
                 }
             }
+            TPData toSave = new TPData(maxDepth, move.getBestChild(), thisValue);
+            tpTable.put(game.createFEN(), toSave);
             return beta;
         }
     }
 
-    private int nullMoveTest(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) {
+    private int nullMoveTest(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) throws IOException {
         game.flip();
         setPieces();
         Tile temp = null;
@@ -616,7 +702,7 @@ public class AI
         return toReturn;
     }
 
-    private int getQueiscence(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) {
+    private int getQueiscence(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) throws IOException {
         game.flip();
         setPieces();
         Tile temp = null;
@@ -631,7 +717,7 @@ public class AI
         return toReturn;
     }
 
-    private int quietNemo(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) {
+    private int quietNemo(int maxDepth, Move move, boolean isMaximizer, int alpha, int beta) throws IOException {
         if (maxDepth <= 0) {
             // if this is a leaf, find the value of the current board,
             // set it as the value of this move, and return this move
@@ -745,7 +831,7 @@ public class AI
         }
     }
 
-    public int quiescence(Move move, boolean isMaximizer, int alpha, int beta) {
+    private int quiescence(Move move, boolean isMaximizer, int alpha, int beta) throws IOException {
         int thisValue = evaluateScore();
 
         if (isMaximizer) {
@@ -854,11 +940,13 @@ public class AI
         }
     }
     
-   public void makeSmartMove() {    
+   private void makeSmartMove() throws IOException {    
         int maxDepth;
         switch(level) {
             case 2: maxDepth = 4 ; break;
-            case 3: maxDepth = 5; break;
+            case 3: {
+                maxDepth = 5; 
+            } break;
             case 4: maxDepth = 3; break;
             case 5: maxDepth = 4; break;
             default: maxDepth = 2; break;
@@ -875,9 +963,7 @@ public class AI
 
         game.move(toMake);
         Move currentMove = toMake;
-        // System.out.println(currentMove.getPiece().getType() + "<<Piece, Tile>>" + currentMove.getTile().getID());
         while(currentMove.getBestChild() != null) {
-            // System.out.println(currentMove.getBestChild().getPiece().getType() + "<<Piece, Tile>>" + currentMove.getBestChild().getTile().getID());
             currentMove = currentMove.getBestChild();
         }      
     }
@@ -887,48 +973,26 @@ public class AI
         LinkedList<Piece> wPieces = game.getWhitePieces();
         LinkedList<Piece> bPieces = game.getBlackPieces();
 
-        for (Piece piece: wPieces)
-        {
+        for (Piece piece: wPieces) {
             if (piece.getTile() != null) {
                 score += piece.getValue();
                 int rank = Character.getNumericValue(piece.getTile().getID().charAt(0));
                 int file = Character.getNumericValue(piece.getTile().getID().charAt(1));
                 char pieceType = piece.getType();
 
-                if (pieceType == 'P')
-                {
-                    score += pawnTable[rank][file];
-
+                if (pieceType == 'P') { score += pawnTable[rank][file]; }
+                else if (pieceType == 'R') { score += rookTable[rank][file]; }
+                else if (pieceType == 'K') {
+                    if (getEndgame()) { score += kingEndTable[rank][file]; }
+                    else { score += kingOpenTable[rank][file]; }
                 }
-                else if (pieceType == 'R')
-                {
-                    score += rookTable[rank][file];
-
-                }
-                else if (pieceType == 'K')
-                {
-                    score += kingOpenTable[rank][file];
-                }
-                else if (pieceType == 'Q' )
-                {
-                    score += queenTable[rank][file];
-
-                }
-                else if (pieceType == 'N')
-                {
-                    score += knightTable[rank][file];
-
-                }
-                else if (pieceType == 'B')
-                {
-                    score += bishopTable[rank][file];
-
-                }
+                else if (pieceType == 'Q' ) { score += queenTable[rank][file]; }
+                else if (pieceType == 'N') { score += knightTable[rank][file]; }
+                else if (pieceType == 'B') { score += bishopTable[rank][file]; }
             }
         }
 
-        for (Piece piece: bPieces)
-        {
+        for (Piece piece: bPieces) {
             if (piece.getTile() != null) {
                 score -= piece.getValue();
 
@@ -936,40 +1000,49 @@ public class AI
                 int file = Character.getNumericValue(piece.getTile().getID().charAt(1));
                 char pieceType = piece.getType();
 
-                if (pieceType == 'p')
-                {
-                    score -= pawnTable[7 - rank][file];
-
-                }
-                else if (pieceType == 'r')
-                {
-                    score -= rookTable[7 - rank][file];
-
-                }
-                else if (pieceType == 'k')
-                {
-                    score -= kingOpenTable[7 - rank][file];
-
-                }
-                else if (pieceType == 'q')
-                {
-                    score -= queenTable[7 - rank][file];
-
-                }
-                else if (pieceType == 'n')
-                {
-                    score -= knightTable[7 - rank][file];
-
-                }
-                else if (pieceType == 'b')
-                {
-                    score -= bishopTable[7 - rank][file];
-
+                if (pieceType == 'p') { score -= pawnTable[7 - rank][file]; }
+                else if (pieceType == 'n') { score -= knightTable[7 - rank][file]; }
+                else if (pieceType == 'b') { score -= bishopTable[7 - rank][file]; }
+                else if (pieceType == 'r') { score -= rookTable[7 - rank][file]; }
+                else if (pieceType == 'q') { score -= queenTable[7 - rank][file]; }
+                else if (pieceType == 'k') {
+                    if (getEndgame()) { score += kingEndTable[rank][file]; }
+                    else { score += kingOpenTable[rank][file]; }
                 }
             }
         }
-        if (level == 5) return -score;
         return score;
+    }
+
+    private void saveMove(int value) {
+        String currFEN = game.createFEN();
+        checkMap.put(currFEN, value);
+    }
+
+    public void printMoves() throws IOException {
+        Set<String> keys = checkMap.keySet();
+        MATEFILE.createNewFile(); 
+        PrintWriter addMates = new PrintWriter(MATEFILE);
+        
+        for (String fen : keys) {
+            int score = checkMap.get(fen);
+            String toStore = fen + "," + score;
+            addMates.println(toStore);
+        }
+        addMates.close();
+    }
+
+    private void setCheckMap() throws IOException {
+        if (!MATEFILE.createNewFile()) {
+            Scanner saveMates = new Scanner(MATEFILE);
+            while (saveMates.hasNextLine()) {
+                String currString = saveMates.nextLine();
+                String[] keyVal = currString.split(",");
+                Integer score = Integer.parseInt(keyVal[1]);
+                checkMap.put(keyVal[0], score);
+            }
+            saveMates.close();
+        }
     }
 
     // unit test of methods

@@ -72,7 +72,7 @@ public class Game
     private JTextArea fentext;
     private JPanel sidepanel;
     
-    public Game(int level)
+    public Game(int level) throws IOException
     {
         this.side = 'w';
         this.movehistory = new Stack<String>();
@@ -113,7 +113,6 @@ public class Game
             case 2: frameName += " -- Victus"; break;
             case 3: frameName += " -- Nemo"; break;
             case 4: frameName += " -- Quiet Nemo"; break;
-            case 5: frameName += " -- Charitable Nemo"; break;
             default:; break;
         };
         this.frame = new JFrame(frameName);
@@ -363,7 +362,7 @@ public class Game
         frame.setVisible(true);
     }
 
-    public void move(Move m) {
+    public void move(Move m) throws IOException {
         int oRank = Character.getNumericValue(m.getOrigin().charAt(0));
         int oFile = Character.getNumericValue(m.getOrigin().charAt(1));
         int tRank = Character.getNumericValue(m.getTarget().charAt(0));
@@ -373,8 +372,7 @@ public class Game
     }
     
     // moves the given piece to the given square
-    public void move(Piece piece, Tile target)
-    {
+    public void move(Piece piece, Tile target) throws IOException {
         
         setMemory();
         // mate and draw checks before a move is made to ensure players to not try to make illegal moves
@@ -415,7 +413,7 @@ public class Game
     }
     
     // determines whether or not one side is checkmated or stalemated
-    public int mateDrawCheck()
+    public int mateDrawCheck() throws IOException
     {
         // checks for mate or stalemate
         Stack<Piece> whitemoves = new Stack<Piece>();
@@ -439,6 +437,7 @@ public class Game
         if (whitemoves.isEmpty()) {
             if (side == 'w') {
                 if (wKing.getTile().isAttacked()) {
+                    getAI().printMoves();
                     return MATE;
                 } 
                 return DRAW;
@@ -448,6 +447,7 @@ public class Game
         else if (blackmoves.isEmpty()) {
             if (side == 'b') {
                 if (bKing.getTile().isAttacked()) {
+                    getAI().printMoves();
                     return MATE;
                 } 
                 return DRAW;
@@ -689,7 +689,7 @@ public class Game
     }
     
     // unit testing of ChessSPE classes
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         int level = Integer.parseInt(args[0]);
         Game game = new Game(level);

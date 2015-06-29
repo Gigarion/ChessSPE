@@ -6,6 +6,7 @@ public class Move implements Comparable<Move> {
 	private int value;
 	private Move bestChild;
 	private boolean isPV;
+	private boolean isTP;
 	private boolean isCapture;
 	private char myPiece;
 	private char victim;
@@ -17,6 +18,7 @@ public class Move implements Comparable<Move> {
 		this.target = null;
 		this.bestChild = null;
 		this.isPV = false;
+		this.isTP = false;
 	}
 	
 	public Move(Piece p, Tile t) {
@@ -70,6 +72,14 @@ public class Move implements Comparable<Move> {
 		return isPV;
 	}
 
+	public void isTP() {
+		isTP = true;
+	}
+
+	public boolean getTP() {
+		return isTP;
+	}
+
 	public void setValue(int val) {
 		this.value = val;
 	}
@@ -120,6 +130,12 @@ public class Move implements Comparable<Move> {
 
 		if (m.getPV())
 			itVal += 530;
+
+		if (isTP) 
+			myVal += 2000;
+
+		if (m.getTP()) 
+			itVal += 2000;
 
 		if (myVal > itVal) return 1;
 		else if (myVal < itVal) return -1;

@@ -1,0 +1,6 @@
+private HashMap tptable;
+
+// before initial move call
+tptable.clear();
+
+
