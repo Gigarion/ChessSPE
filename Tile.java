@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.Stack;
+import java.io.*;
 
 public class Tile extends JPanel implements MouseListener
 {
@@ -47,31 +48,39 @@ public class Tile extends JPanel implements MouseListener
     }
 
     // when clicked, a tile will highlight its pieces' valid moves
-    public void mouseClicked(MouseEvent e)
-    {
-        // game only highlights one piece's moves at a time
-        if (!game.getHighlight()) {
-            if (piece != null) {
-                Stack<Tile> moveHold = piece.moves();
-                if (piece.getColor() == game.getSide() && !moveHold.empty()) {
-                    game.setHighlight(true);
-                    game.draw(moveHold);
-                    game.hold(piece);
-                }
-                else if (moveHold.empty()) {
-                    darken();
-                }
-            }
-        }
-        else {
-            for (Tile t : game.getHold().moves()) {
-                if (t.getID().equals(iD)) {
-                    game.move(game.getHold(), this);
-                    darken();
+    public void mouseClicked(MouseEvent e) {
+    try {
+            // game only highlights one piece's moves at a time
+            if (!game.getHighlight()) {
+                if (piece != null) {
+                    Stack<Tile> moveHold = piece.moves();
+                    if (piece.getColor() == game.getSide() && !moveHold.empty()) {
+                        game.setHighlight(true);
+                        game.draw(moveHold);
+                        game.hold(piece);
+                    }
+                    else if (moveHold.empty()) {
+                        darken();
+                    }
                 }
             }
-            darken();
-        }
+            else {
+                for (Tile t : game.getHold().moves()) {
+                    if (t.getID().equals(iD)) {
+                        game.move(game.getHold(), this);
+                        darken();
+
+                        // Ai makes a move, if it exists
+                        if (game.getAI() != null) { game.getAI().makeAIMove(); }
+                        else {
+                            game.flip();
+                            game.draw();
+                        }
+                    }
+                }
+                darken();
+            }
+        } catch (IOException i) {}
     }
 
     // highlighted squares display a mix of their current color and yellow

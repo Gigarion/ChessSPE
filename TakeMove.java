@@ -19,5 +19,6 @@ public class TakeMove implements ActionListener {
 	}
 	public void actionPerformed(ActionEvent e) {
 		if (game != null) game.takeMove();
+		game.draw();
 	}
 }

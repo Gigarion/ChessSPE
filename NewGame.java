@@ -20,6 +20,7 @@ public class NewGame implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (game != null) {
+			game.emptyMoveHistory();
 			game.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 			game.draw();
 		}

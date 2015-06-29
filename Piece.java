@@ -57,6 +57,10 @@ public class Piece
 	// sets the piece color
 	public void setColor(char c) { color = c; }
 
+	public void setTile(Tile t) {
+		this.tile = t;
+	}
+
 	// returns the piece tile
 	public Tile getTile() { return tile; }
 
@@ -297,6 +301,7 @@ public class Piece
 			}
 
 			stopCatch = false;
+			fTemp = file;
 			rTemp = rank;
 			for (int f = 1; (rTemp < 8 && fTemp >= 0); f++) {
 				fTemp = file - f;
@@ -321,6 +326,7 @@ public class Piece
 			}
 
 			stopCatch = false;
+			fTemp = file;
 			rTemp = rank;
 			for (int f = 1; (rTemp >= 0 && fTemp >= 0); f++) {
 				fTemp = file - f;
@@ -398,6 +404,7 @@ public class Piece
 			}
 
 			stopCatch = false;
+			fTemp = file;
 			rTemp = rank;
 			for (int f = 1; (rTemp < 8 && fTemp >= 0); f++) {
 				fTemp = file - f;
@@ -422,6 +429,7 @@ public class Piece
 			}
 
 			stopCatch = false;
+			fTemp = file;
 			rTemp = rank;
 			for (int f = 1; (fTemp >= 0 && rTemp >= 0); f++) {
 				fTemp = file - f;
@@ -909,6 +917,7 @@ public class Piece
 			}
 
 			stopCatch = false;
+			fTemp = file;
 			rTemp = rank;
 			for (int f = 1; (fTemp >= 0 && rTemp >=0); f++) {
 				fTemp = file - f;
@@ -934,6 +943,7 @@ public class Piece
 
 			stopCatch = false;
 			fTemp = file;
+			rTemp = rank;
 			for (int f = 1; fTemp < 8; f++) {
 				fTemp = file + f;
 				if (!stopCatch) {
@@ -1143,16 +1153,19 @@ public class Piece
 
 			if (!tile.isAttacked() && game.getCastlingRights()[0] && !game.getTile(0, 5).isAttacked(this) 
         	&& !game.getTile(0, 6).isAttacked(this) && game.getTile(0, 5).getPiece() == null
-			        && game.getTile(0, 6).getPiece() == null)
+			        && game.getTile(0, 6).getPiece() == null && game.getTile(0, 7).getPiece() != null)
 			{
-    			stack.push(game.getTile(0, 6));
+				if (game.getTile(0, 7).getPiece().getType() == 'R');
+    				stack.push(game.getTile(0, 6));
 			}
 
 			if (!tile.isAttacked() && game.getCastlingRights()[1] && !game.getTile(0, 3).isAttacked(this) 
 			        && !game.getTile(0, 2).isAttacked(this) && game.getTile(0, 1).getPiece() == null
-			        && game.getTile(0, 2).getPiece() == null && game.getTile(0, 3).getPiece() == null)
+			        && game.getTile(0, 2).getPiece() == null && game.getTile(0, 3).getPiece() == null 
+			        && game.getTile(0, 0).getPiece() != null)
 			{
-			    stack.push(game.getTile(0, 2));
+				if (game.getTile(0, 0).getPiece().getType() == 'R');
+			    	stack.push(game.getTile(0, 2));
 			}
 		}
 
@@ -1299,16 +1312,18 @@ public class Piece
 
 		      if (!tile.isAttacked() && game.getCastlingRights()[2] && !game.getTile(7, 5).isAttacked(this) 
 		              && !game.getTile(7, 6).isAttacked(this) && game.getTile(7, 5).getPiece() == null
-			        && game.getTile(7, 6).getPiece() == null)
+			        && game.getTile(7, 6).getPiece() == null && game.getTile(7, 7).getPiece() != null)
 		      {
-		          stack.push(game.getTile(7, 6));
+		      	if (game.getTile(7, 7).getPiece().getType() == 'r')
+		          	stack.push(game.getTile(7, 6));
 		      }
 		      
 		      if (!tile.isAttacked() && game.getCastlingRights()[3] && !game.getTile(7, 3).isAttacked(this) 
 		              && !game.getTile(7, 2).isAttacked(this) && game.getTile(7, 1).getPiece() == null
-			        && game.getTile(7, 2).getPiece() == null && game.getTile(7, 3).getPiece() == null)
+			        && game.getTile(7, 2).getPiece() == null && game.getTile(7, 3).getPiece() == null && game.getTile(7, 0).getPiece() != null)
 		      {
-		          stack.push(game.getTile(7, 2));
+		      	if (game.getTile(7, 0).getPiece().getType() == 'r')
+		          	stack.push(game.getTile(7, 2));
 		      }
 		}
 
@@ -1333,6 +1348,10 @@ public class Piece
 				else temp = null;
 				tile.empty();
 				t.place(this);
+				king.getType();
+				kingSpot.getID();
+				t.getID();
+				if (kingSpot == null) System.out.println("throw an error");
 				if (!kingSpot.isAttacked()) thinStack.push(t);
 				t.empty();
 				t.place(temp);
@@ -1349,6 +1368,7 @@ public class Piece
 				else temp = null;
 				tile.empty();
 				t.place(this);
+				if (kingSpot == null) System.out.println("throw an error");
 				if (!kingSpot.isAttacked()) thinStack.push(t);
 				t.empty();
 				t.place(temp);
